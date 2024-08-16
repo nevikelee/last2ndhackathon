@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        .div {
+            text-align: center;
+            text-transform: uppercase;
+            align-items: center;
+            align-content: center;
+        }
+        
+        .body {
+            text-align: center;
+            text-transform: uppercase;
+            align-items: center;
+            align-content: center;
+        }
+
+        .alert-primary {
+            color: #004085;
+            background-color: #cce5ff;
+            border-color: #b8daff
+        }
+
+        .alert {
+            position: relative;
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
+    </style>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width"/>
+        <title>Audio transcriber</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="max-w-4xl mx-auto h-screen pt-20 px-10">
+            <p>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class="alert alert-primary">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
+                    {% endwith %}
+                {% block body %}{% endblock %}
+            </p>
+            <form action="" method='POST' enctype="multipart/form-data">
+                <label for="video">Video</label>
+                <input type="file" name="video"/>
+                <button>Submit</button>
+            </form>
+        </div>
+    </body>
+</html>

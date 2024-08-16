@@ -1,0 +1,26 @@
+.div {
+    text-align: center;
+    text-transform: uppercase;
+    align-items: center;
+    align-content: center;
+}
+.body {
+    text-align: center;
+    text-transform: uppercase;
+    align-items: center;
+    align-content: center;
+}
+
+.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff
+}
+
+.alert {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
