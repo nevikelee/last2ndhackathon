@@ -86,6 +86,10 @@ def Text_to_speech(first_file, translated_text):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     language = 'Lithuanian'
+
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    print(files)
+
     if request.method == 'POST':
         file = request.files['video']
 
@@ -103,13 +107,13 @@ def index():
             translated_text = TranslateText(text, language)
 
             # Translated text is turned into sound (Text-to-speech), audio file is saved
-            Text_to_speech(file, translated_text)
+            #Text_to_speech(file, translated_text)
 
-            return translated_text
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text)
         else:
             flash('Incorrect file type')
             redirect('/')
-    return render_template('index.html')
+    return render_template('index.html', files=files)
 
 if __name__ == "__main__":
     app.run(debug=True)
