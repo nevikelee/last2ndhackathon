@@ -28,7 +28,108 @@
             border: 1px solid transparent;
             border-radius: .25rem;
         }
+
+
+
+        .uploadText {
+            font-size: 20px;
+        }
+
+        .submitButton {
+            height: 30px;
+            width: 150px;
+            background-color:forestgreen;
+            font-size: 15px;
+            font-weight:bolder;
+            margin:2vh;
+        }
+
+        .previewContainer {
+            width: 100%;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        .previewContainer {
+            position: relative;
+            width: 320px; /* Adjust to your needs */
+            height: 240px; /* Adjust to your needs */
+        }
+
+        #videoPreviewContainer, #audioPreviewContainer {
+            position: absolute;
+            top: 0;
+            left: 100px;
+            width: 320px; /* Adjust to match preview size */
+            height: 240px; /* Adjust to match preview size */
+            z-index: 0; /* Ensure previews are below the form */
+            
+        }
+
+
+
     </style>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get references to the input and video elements
+        const input = document.getElementById('videoInput');
+        const videoPreviewContainer = document.getElementById('videoPreviewContainer');
+        const videoPreview = document.getElementById('videoPreview');
+
+        const audioPreviewContainer = document.getElementById('audioPreviewContainer');
+        const audioPreview = document.getElementById('audioPreview');
+
+        function hideAll(){
+            videoPreview.src = '';
+            audioPreview.src = '';
+            videoPreviewContainer.classList.add('hidden');
+            audioPreviewContainer.classList.add('hidden');
+        }
+
+        // Listen for changes on the file input
+        input.addEventListener('change', function () {
+            const file = this.files[0];
+            console.log(file)
+
+            if(file){
+                if(file.type.startsWith('video/')){
+                    loadPreview(file, videoPreviewContainer, videoPreview, audioPreviewContainer);
+                }
+                else if(file.type.startsWith('audio/')){
+                    loadPreview(file, audioPreviewContainer, audioPreview, videoPreviewContainer);
+                }
+                else{
+                    hideAll();
+                }
+            }
+            else{
+                hideAll();
+            }
+
+        });
+
+
+    });
+
+
+
+function loadPreview(file, showContainer, show, hideContainer){
+
+    show.src = URL.createObjectURL(file);
+    showContainer.classList.remove('hidden');
+    hideContainer.classList.add('hidden');
+    show.load();
+    show.play();
+}
+</script>
+
+
+
+
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width"/>
@@ -36,7 +137,9 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="max-w-4xl mx-auto h-screen pt-20 px-10">
+        <div class="max-w-4xl mx-auto h-screen pt-20 px-10" style="position:relative">
+
+
             <p>
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
@@ -49,11 +152,53 @@
                     {% endwith %}
                 {% block body %}{% endblock %}
             </p>
-            <form action="" method='POST' enctype="multipart/form-data">
-                <label for="video">Video</label>
-                <input type="file" name="video"/>
-                <button>Submit</button>
-            </form>
+            
+            <hr>
+            <div style="display:flex">
+                <div style="width:fit-content; height: fit-content; padding:5px">
+                    
+                    <form action="" method='POST' enctype="multipart/form-data">
+                        <label class="uploadText" for="video">Upload video for transcription</label>
+                        <br>
+                        <br>
+                        <input type="file" id="videoInput" name="video"/>
+                        <br>
+                        <button class="submitButton">Submit</button>
+                    </form>
+
+                </div>
+
+                <div class="previewContainer">
+                    <p>Preview:</p>
+
+                    <div id="videoPreviewContainer" class="hidden">
+
+                        <video id="videoPreview" width="320" height="240" controls>
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div id="audioPreviewContainer" class="hidden">
+
+                        <audio id="audioPreview" controls>
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <hr>
+            <h1>Files in Directory</h1>
+            <ul>
+                {% for file in files %}
+                    <li>{{ file }}</li>
+                {% endfor %}
+            </ul>
+
         </div>
+
     </body>
 </html>
