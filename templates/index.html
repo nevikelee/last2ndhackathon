@@ -88,7 +88,7 @@
             audioPreview.src = '';
             videoPreviewContainer.classList.add('hidden');
             audioPreviewContainer.classList.add('hidden');
-            
+
         }
 
         // Listen for changes on the file input
@@ -127,6 +127,16 @@ function loadPreview(file, showContainer, show, hideContainer, hide){
     show.load();
     show.play();
 }
+
+
+setTimeout(function() {
+    var flashMessages = document.getElementById('flash-messages');
+    if (flashMessages) {
+        flashMessages.style.transition = "opacity 0.5s ease-out";
+        flashMessages.style.opacity = "0";
+        setTimeout(function(){ flashMessages.style.display = "none"; }, 500); // Hides after fade out
+    }
+}, 3000);
 </script>
 
 
@@ -145,7 +155,7 @@ function loadPreview(file, showContainer, show, hideContainer, hide){
             <p>
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
-                        <ul class="alert alert-primary">
+                        <ul id="flash-messages" class="alert alert-primary">
                         {% for message in messages %}
                             <li>{{ message }}</li>
                         {% endfor %}
@@ -159,16 +169,18 @@ function loadPreview(file, showContainer, show, hideContainer, hide){
             <div style="display:flex">
                 <div style="width:fit-content; height: fit-content; padding:5px">
                     
-                    <form action="" method='POST' enctype="multipart/form-data">
-                        <label class="uploadText" for="video">Upload video for transcription</label>
+                    <form method='POST' enctype="multipart/form-data">
+                        <label class="uploadText" for="videoInput">Upload video or audio for transcription</label>
+                        <!-- <p>Supported formats: flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm</p> -->
                         <br>
                         <br>
                         <input type="file" id="videoInput" name="video" accept="audio/*,video/*"/>
                         <br>
-                        <button class="submitButton">Submit</button>
+                        <button type="submit" class="submitButton">Submit</button>
                     </form>
 
                 </div>
+
 
                 <div class="previewContainer">
                     
@@ -190,8 +202,10 @@ function loadPreview(file, showContainer, show, hideContainer, hide){
 
             </div>
 
-
-
+            <hr>
+            <div style="width:50%">
+                {{ transcripted }}
+            </div>
             <hr>
             <h1>Files in Directory</h1>
             <ul>
@@ -201,6 +215,7 @@ function loadPreview(file, showContainer, show, hideContainer, hide){
             </ul>
 
         </div>
+
 
     </body>
 </html>
