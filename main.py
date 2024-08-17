@@ -34,9 +34,9 @@ def transcribe(filename):
     files = {"file":  open(f'./files/{filename}', "rb")}
 
     response = requests.post(url, headers=header, data=data, files=files)
-    for timestamp in response.json()['segments']:
-        # print(str(round(timestamp['start'], 2)) + ' - ' + str(round(timestamp['end'], 2)) + ': ' + timestamp['text'])
-        print(timestamp)
+    # for timestamp in response.json()['segments']:
+    #     # print(str(round(timestamp['start'], 2)) + ' - ' + str(round(timestamp['end'], 2)) + ': ' + timestamp['text'])
+    #     print(timestamp)
     return response.json()
 
 # Main page
@@ -55,7 +55,7 @@ def index():
             text = transcribe(file.filename)
             
             flash(f'File {file.filename} has been uploaded')
-            return text['text']
+            return render_template('index.html', files=files, transcripted=text['text'])
         else:
             flash('Incorrect file type')
             redirect('/')
