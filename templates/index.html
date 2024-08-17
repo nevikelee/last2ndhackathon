@@ -1,15 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Audio Transcriber</title>
-
-    <!-- Materialize CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <!-- Your custom styles (if any) -->
-    <link rel="stylesheet" href="style.css">
+<html>
     <style>
         .div {
             text-align: center;
@@ -38,179 +28,93 @@
             border: 1px solid transparent;
             border-radius: .25rem;
         }
-
-
-        .uploadText {
-            font-size: 20px;
-        }
-
-        .submitButton {
-            height: 30px;
-            width: 150px;
-            background-color: forestgreen;
-            font-size: 15px;
-            font-weight: bolder;
-            margin: 2vh;
-        }
-
-        .previewContainer {
-            width: 100%;
-        }
-
-        .hidden {
-            visibility: hidden;
-        }
-
-        .previewContainer {
-            width: 320px; /* Adjust to your needs */
-            height: 240px; /* Adjust to your needs */
-        }
-
-        #videoPreviewContainer, #audioPreviewContainer {
-            width: 320px;
-            max-height: 240px;
-            z-index: 0;
-            text-align: center;
-        }
     </style>
-
-
-</head>
-
-<body>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get references to the input and video elements
-            const input = document.getElementById('videoInput');
-            const videoPreviewContainer = document.getElementById('videoPreviewContainer');
-            const videoPreview = document.getElementById('videoPreview');
-
-            const audioPreviewContainer = document.getElementById('audioPreviewContainer');
-            const audioPreview = document.getElementById('audioPreview');
-
-            function hideAll() {
-                videoPreview.src = '';
-                audioPreview.src = '';
-                videoPreviewContainer.classList.add('hidden');
-                audioPreviewContainer.classList.add('hidden');
-            }
-
-            // Listen for changes on the file input
-            input.addEventListener('change', function () {
-                const file = this.files[0];
-                console.log(file)
-
-                if (file) {
-                    if (file.type.startsWith('video/')) {
-
-                        loadPreview(file, videoPreviewContainer, videoPreview, audioPreviewContainer, audioPreview);
-                    }
-                    else if (file.type.startsWith('audio/')) {
-                        loadPreview(file, audioPreviewContainer, audioPreview, videoPreviewContainer, videoPreview);
-                    }
-                    else {
-                        hideAll();
-                    }
-                }
-                else {
-                    hideAll();
-                }
-            });
-        });
-
-
-        function loadPreview(file, showContainer, show, hideContainer, hide) {
-
-            show.src = URL.createObjectURL(file);
-            showContainer.classList.remove('hidden');
-            hideContainer.classList.add('hidden');
-            hide.src = '';
-            show.load();
-            show.play();
-        }
-
-
-        setTimeout(function () {
-            var flashMessages = document.getElementById('flash-messages');
-            if (flashMessages) {
-                flashMessages.style.transition = "opacity 0.5s ease-out";
-                flashMessages.style.opacity = "0";
-                setTimeout(function () { flashMessages.style.display = "none"; }, 500); // Hides after fade out
-            }
-        }, 3000);
-
-    </script>
-    <div class="container">
-        <div class="section">
-
-            <!-- Flash Messages -->
-            <div class="row">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width"/>
+        <title>Audio transcriber</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="max-w-4xl mx-auto h-screen pt-20 px-10">
+            <p>
                 {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <ul id="flash-messages" class="card-panel teal lighten-2" style="padding:1%;">
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% endwith %}
-            </div>
-
-            <!-- Form and Preview Section -->
-            <div class="row">
-                <div class="col s12 m6">
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="file-field input-field">
-                            <div class="btn">
-                                <span>Upload</span>
-                                <input type="file" id="videoInput" name="video" accept="audio/*,video/*">
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text" placeholder="Upload video or audio">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn waves-effect waves-light">Submit</button>
-                    </form>
-                </div>
-
-                <!-- Preview Section -->
-                <div class="col s12 m6 previewContainer">
-                    <div id="videoPreviewContainer" class="hidden">
-                        <video id="videoPreview" class="responsive-video" style="max-height:240px !important" controls>
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div id="audioPreviewContainer" class="hidden">
-                        <audio id="audioPreview" controls>
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Transcripted Section -->
-            <div class="row">
-                <div class="col s12">
-                    {{ transcripted }}
-                </div>
-            </div>
-
-            <!-- Files List -->
-            <div class="row">
-                <div class="col s12">
-                    <h5>Files in Directory</h5>
-                    <ul class="collection">
-                        {% for file in files %}
-                        <li class="collection-item">{{ file }}</li>
+                    {% if messages %}
+                        <ul class="alert alert-primary">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
                         {% endfor %}
-                    </ul>
-                </div>
-            </div>
+                        </ul>
+                        {% endif %}
+                    {% endwith %}
+                {% block body %}{% endblock %}
+            </p>
+            <form action="" method='POST' enctype="multipart/form-data">
+                <label for="video">Video</label>
+                <input type="file" name="video"/>
+                <label for="language">Please select the language you want the video or audio to be translated to:</label>
+                <select name="languages" id="languages">
+                    <option>Afrikaans</option>
+                    <option>Arabic</option>
+                    <option>Armenian</option>
+                    <option>Azerbaijani</option>
+                    <option>Belarusian</option>
+                    <option>Bosnian</option>
+                    <option>Bulgarian</option>
+                    <option>Catalan</option>
+                    <option>Chinese</option>
+                    <option>Croatian</option>
+                    <option>Czech</option>
+                    <option>Danish</option>
+                    <option>Dutch</option>
+                    <option>English</option>
+                    <option>Estonian</option>
+                    <option>Finnish</option>
+                    <option>French</option>
+                    <option>Galician</option>
+                    <option>German</option>
+                    <option>Greek</option>
+                    <option>Hebrew</option>
+                    <option>Hindi</option>
+                    <option>Hungarian</option>
+                    <option>Icelandic</option>
+                    <option>Indonesian</option>
+                    <option>Italian</option>
+                    <option>Japanese</option>
+                    <option>Kannada</option>
+                    <option>Kazakh</option>
+                    <option>Korean</option>
+                    <option>Latvian</option>
+                    <option>Lithuanian</option>
+                    <option>Macedonian</option>
+                    <option>Malay</option>
+                    <option>Marathi</option>
+                    <option>Maori</option>
+                    <option>Nepali</option>
+                    <option>Norwegian</option>
+                    <option>Persian</option>
+                    <option>Polish</option>
+                    <option>Portuguese</option>
+                    <option>Romanian</option>
+                    <option>Russian</option>
+                    <option>Serbian</option>
+                    <option>Slovak</option>
+                    <option>Slovenian</option>
+                    <option>Spanish</option>
+                    <option>Swahili</option>
+                    <option>Swedish</option>
+                    <option>Tagalog</option>
+                    <option>Tamil</option>
+                    <option>Thai</option>
+                    <option>Turkish</option>
+                    <option>Ukrainian</option>
+                    <option>Urdu</option>
+                    <option>Vietnamese</option>
+                    <option>Welsh</option>
+                </select>
+                <button>Submit</button>
+                <a href="../files/translated_video.mp4" download="translated_video.mp4">Your file is ready</a>
+            </form>
         </div>
-    </div>
-
-    <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-</body>
-
+    </body>
 </html>
