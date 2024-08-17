@@ -88,7 +88,6 @@
             audioPreview.src = '';
             videoPreviewContainer.classList.add('hidden');
             audioPreviewContainer.classList.add('hidden');
-
         }
 
         // Listen for changes on the file input
@@ -98,6 +97,7 @@
 
             if(file){
                 if(file.type.startsWith('video/')){
+
                     loadPreview(file, videoPreviewContainer, videoPreview, audioPreviewContainer, audioPreview);
                 }
                 else if(file.type.startsWith('audio/')){
@@ -118,7 +118,9 @@
 
 
 
+
 function loadPreview(file, showContainer, show, hideContainer, hide){
+
 
     show.src = URL.createObjectURL(file);
     showContainer.classList.remove('hidden');
@@ -137,6 +139,7 @@ setTimeout(function() {
         setTimeout(function(){ flashMessages.style.display = "none"; }, 500); // Hides after fade out
     }
 }, 3000);
+
 </script>
 
 
@@ -177,13 +180,14 @@ setTimeout(function() {
                         <input type="file" id="videoInput" name="video" accept="audio/*,video/*"/>
                         <br>
                         <button type="submit" class="submitButton">Submit</button>
+
                     </form>
 
                 </div>
 
-
                 <div class="previewContainer">
                     
+
 
                     <div id="videoPreviewContainer" class="hidden">
 
@@ -206,6 +210,7 @@ setTimeout(function() {
             <div style="width:50%">
                 {{ transcripted }}
             </div>
+
             <hr>
             <h1>Files in Directory</h1>
             <ul>
@@ -215,7 +220,6 @@ setTimeout(function() {
             </ul>
 
         </div>
-
 
     </body>
 </html>

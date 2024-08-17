@@ -37,6 +37,7 @@ def transcribe(filename):
     # for timestamp in response.json()['segments']:
     #     # print(str(round(timestamp['start'], 2)) + ' - ' + str(round(timestamp['end'], 2)) + ': ' + timestamp['text'])
     #     print(timestamp)
+
     return response.json()
 
 # Main page
