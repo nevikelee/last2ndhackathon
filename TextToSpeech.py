@@ -1,24 +1,36 @@
-import boto3
-import boto3.session
+
+from EnvAPI import get_API
+import requests
 from transcription import transcribeAudio
 from TextTranslations import TranslateText
 
-session = boto3.Session(
-    aws_access_key_id = "AKIAWOOXUE43YA7PZ7O6",
-    aws_secret_access_key = "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",
-    region_name = "eu-north-1"
+def Speech(text, user_api_key, output_file):
+    url = "https://api.turboline.ai/openai/audio/speech"
 
-)
-polly = session.client('polly')
+    header = {
+        "X-TL-Key" : user_api_key,
+    }
+    data = {
+        "model": "tts-1",
+        "input": text,
+        "voice": "onyx",
+        "response_format" : "mp3"
+    }
+    response = requests.post(url, headers=header, json=data, stream=True)
+    
+    if response.status_code == 200:
+        if 'audio' in response.headers.get('Content-Type', ''):
+            with open(output_file, 'wb') as f:
+                f.write(response.content)
+            print(f"Audio saved as {output_file}")
+        else:
+            print("Unexpected content type received:", response.headers.get('Content-Type'))
+            print("Response content:", response.text)
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
 
-response = polly.synthesize_speech(
-    Text=TranslateText(transcribeAudio()['text'],"Italian"),
-    OutputFormat="mp3",
-    VoiceId="Joanna",
-    LanguageCode = "it-IT"
-)
-with open("testas.mp3",'wb') as file:
-    file.write(response['AudioStream'].read())
+api_key = get_API()  # Replace with your actual API key
+text = TranslateText(transcribeAudio(), "Lithuanian")
+output_file = "output_audio.mp3"
 
-
-    print("mp3 file saved")
+Speech(text, api_key, output_file)
