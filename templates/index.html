@@ -201,7 +201,7 @@
                     <h5>Files in Directory</h5>
                     <ul class="collection">
                         {% for file in files %}
-                        <li class="collection-item">{{ file }}</li>
+                        <li id="{{ file }}" class="collection-item">{{ file }}</li>
                         {% endfor %}
                     </ul>
                 </div>
