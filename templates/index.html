@@ -63,14 +63,23 @@
         }
 
         .previewContainer {
+<<<<<<< HEAD
             width: 320px;
             height: 240px;
             /* position: absolute; */
 
+=======
+            position: relative;
+            width: 320px;
+            /* Adjust to your needs */
+            height: 240px;
+            /* Adjust to your needs */
+>>>>>>> 90fb3fefa95569fad95333bc00184bc81a7da24c
         }
 
         #videoPreviewContainer,
         #audioPreviewContainer {
+<<<<<<< HEAD
             /* position: absolute;
             top: 0;
             left: 100px; */
@@ -78,6 +87,18 @@
             max-height: 240px;
             z-index: 0;
             text-align: center;
+=======
+            position: absolute;
+            top: 0;
+            left: 100px;
+            width: 320px;
+            /* Adjust to match preview size */
+            height: 240px;
+            /* Adjust to match preview size */
+            z-index: 0;
+            /* Ensure previews are below the form */
+
+>>>>>>> 90fb3fefa95569fad95333bc00184bc81a7da24c
         }
     </style>
 
@@ -122,6 +143,7 @@
                 else {
                     hideAll();
                 }
+<<<<<<< HEAD
             });
         });
 
@@ -145,16 +167,57 @@
                 setTimeout(function () { flashMessages.style.display = "none"; }, 500); // Hides after fade out
             }
         }, 3000);
+=======
+
+            });
+
+
+        });
+
+
+
+
+        function loadPreview(file, showContainer, show, hideContainer, hide) {
+>>>>>>> 90fb3fefa95569fad95333bc00184bc81a7da24c
 
     </script>
     <div class="container">
         <div class="section">
 
+<<<<<<< HEAD
+=======
+            show.src = URL.createObjectURL(file);
+            showContainer.classList.remove('hidden');
+            hideContainer.classList.add('hidden');
+            hide.src = '';
+            show.load();
+            show.play();
+        }
+
+
+        setTimeout(function () {
+            var flashMessages = document.getElementById('flash-messages');
+            if (flashMessages) {
+                flashMessages.style.transition = "opacity 0.5s ease-out";
+                flashMessages.style.opacity = "0";
+                setTimeout(function () { flashMessages.style.display = "none"; }, 500); // Hides after fade out
+            }
+        }, 3000);
+
+    </script>
+    <div class="container">
+        <div class="section">
+
+>>>>>>> 90fb3fefa95569fad95333bc00184bc81a7da24c
             <!-- Flash Messages -->
             <div class="row">
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
+<<<<<<< HEAD
                 <ul id="flash-messages" class="card-panel teal lighten-2" style="padding:1%;">
+=======
+                <ul id="flash-messages" class="card-panel teal lighten-2">
+>>>>>>> 90fb3fefa95569fad95333bc00184bc81a7da24c
                     {% for message in messages %}
                     <li>{{ message }}</li>
                     {% endfor %}
@@ -181,9 +244,15 @@
                 </div>
 
                 <!-- Preview Section -->
+<<<<<<< HEAD
                 <div class="col s12 m6 previewContainer">
                     <div id="videoPreviewContainer" class="hidden">
                         <video id="videoPreview" class="responsive-video" style="max-height:240px !important" controls>
+=======
+                <div class="col s12 m6">
+                    <div id="videoPreviewContainer" class="hidden">
+                        <video id="videoPreview" class="responsive-video" controls>
+>>>>>>> 90fb3fefa95569fad95333bc00184bc81a7da24c
                             Your browser does not support the video tag.
                         </video>
                     </div>
