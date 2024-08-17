@@ -48,6 +48,7 @@ def index():
     print(files)
 
     if request.method == 'POST':
+
         file = request.files['video']
 
         if file and allowed_file(file.filename):
@@ -56,6 +57,8 @@ def index():
             text = transcribe(file.filename)
             
             flash(f'File {file.filename} has been uploaded')
+            files = os.listdir(app.config['UPLOAD_FOLDER'])
+
             return render_template('index.html', files=files, transcripted=text['text'])
         else:
             flash('Incorrect file type')
