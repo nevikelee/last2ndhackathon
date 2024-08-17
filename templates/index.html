@@ -63,25 +63,21 @@
         }
 
         .previewContainer {
-            position: relative;
             width: 320px;
-            /* Adjust to your needs */
             height: 240px;
-            /* Adjust to your needs */
+            /* position: absolute; */
+
         }
 
         #videoPreviewContainer,
         #audioPreviewContainer {
-            position: absolute;
+            /* position: absolute;
             top: 0;
-            left: 100px;
+            left: 100px; */
             width: 320px;
-            /* Adjust to match preview size */
-            height: 240px;
-            /* Adjust to match preview size */
+            max-height: 240px;
             z-index: 0;
-            /* Ensure previews are below the form */
-
+            text-align: center;
         }
     </style>
 
@@ -126,17 +122,11 @@
                 else {
                     hideAll();
                 }
-
             });
-
-
         });
 
 
-
-
         function loadPreview(file, showContainer, show, hideContainer, hide) {
-
 
             show.src = URL.createObjectURL(file);
             showContainer.classList.remove('hidden');
@@ -164,7 +154,7 @@
             <div class="row">
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
-                <ul id="flash-messages" class="card-panel teal lighten-2">
+                <ul id="flash-messages" class="card-panel teal lighten-2" style="padding:1%;">
                     {% for message in messages %}
                     <li>{{ message }}</li>
                     {% endfor %}
@@ -191,9 +181,9 @@
                 </div>
 
                 <!-- Preview Section -->
-                <div class="col s12 m6">
+                <div class="col s12 m6 previewContainer">
                     <div id="videoPreviewContainer" class="hidden">
-                        <video id="videoPreview" class="responsive-video" controls>
+                        <video id="videoPreview" class="responsive-video" style="max-height:240px !important" controls>
                             Your browser does not support the video tag.
                         </video>
                     </div>
