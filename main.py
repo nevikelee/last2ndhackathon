@@ -26,18 +26,26 @@ def transcribe(filename):
     data = {
         "model" : "whisper-1",
         "prompt" : "transcribe this audio into text",
-        "language" : "en"
+        "language" : "en",
+        "response_format" : "verbose_json",
+        "timestamp_granularities" : ["word"]
     }
 
     files = {"file":  open(f'./files/{filename}', "rb")}
 
     response = requests.post(url, headers=header, data=data, files=files)
-
+    for timestamp in response.json()['segments']:
+        # print(str(round(timestamp['start'], 2)) + ' - ' + str(round(timestamp['end'], 2)) + ': ' + timestamp['text'])
+        print(timestamp)
     return response.json()
 
 # Main page
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    print(files)
+
     if request.method == 'POST':
         file = request.files['video']
 
@@ -51,7 +59,9 @@ def index():
         else:
             flash('Incorrect file type')
             redirect('/')
-    return render_template('index.html')
+    
+
+    return render_template('index.html', files=files)
 
 if __name__ == "__main__":
     app.run(debug=True)
