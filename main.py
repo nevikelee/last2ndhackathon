@@ -67,7 +67,7 @@ def TranslateText(text, language):
 
 # Find the speed of the tts audio so the audio and video are the same length
 def FindSpeed(file, translated_text):
-    Text_to_speech1(file, translated_text)
+    Text_to_speech(file, translated_text)
     OrgFile = sf.SoundFile(f"./files/{file.filename}.mp3")
     OrgSeconds = OrgFile.frames/OrgFile.samplerate
     VideoFileClip(f"./files/{file.filename}").audio.write_audiofile(f"./files/{file.filename}.mp3")
@@ -77,8 +77,9 @@ def FindSpeed(file, translated_text):
     print(ActualSeconds)
     return OrgSeconds / ActualSeconds
 
-# Text to speech with normal speed
-def Text_to_speech1(first_file, text):
+
+# Text-to-speech method
+def Text_to_speech(file, text, speed=1.0):
     url = "https://api.turboline.ai/openai/audio/speech"
 
     header = {
@@ -89,50 +90,19 @@ def Text_to_speech1(first_file, text):
         "input": text,
         "voice": "onyx",
         "response_format" : "mp3",
-        "speed": 1
-    }
-    response = requests.post(url, headers=header, json=data, stream=True)
-    
-    if response.status_code == 200:
-        try:
-            os.remove(f"./files/{first_file.filename}.mp3")
-        except OSError:
-            pass
-        if 'audio' in response.headers.get('Content-Type', ''):
-            with open(f"./files/{first_file.filename}.mp3", 'wb') as f:
-                f.write(response.content)
-            print(f'Audio saved as {f"./files/{first_file.filename}.mp3"}')
-        else:
-            print("Unexpected content type received:", response.headers.get('Content-Type'))
-            print("Response content:", response.text)
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
-
-# Text-to-speech method
-def Text_to_speech2(first_file, translated_text, speed):
-    url = "https://api.turboline.ai/openai/audio/speech"
-
-    header = {
-        "X-TL-Key" : API_KEY,
-    }
-    data = {
-        "model": "tts-1",
-        "input": translated_text,
-        "voice": "onyx",
-        "response_format" : "mp3",
         "speed": speed
     }
     response = requests.post(url, headers=header, json=data, stream=True)
     
     if response.status_code == 200:
         try:
-            os.remove(f"./files/{first_file.filename}.mp3")
+            os.remove(f"./files/{file.filename}.mp3")
         except OSError:
             pass
         if 'audio' in response.headers.get('Content-Type', ''):
-            with open(f"./files/{first_file.filename}.mp3", 'wb') as f:
+            with open(f"./files/{file.filename}.mp3", 'wb') as f:
                 f.write(response.content)
-            print(f'Audio saved as {f"./files/{first_file.filename}.mp3"}')
+            print(f'Audio saved as {f"./files/{file.filename}.mp3"}')
         else:
             print("Unexpected content type received:", response.headers.get('Content-Type'))
             print("Response content:", response.text)
@@ -194,7 +164,7 @@ def index():
             speed = FindSpeed(file, translated_text)
 
             # Translated text is turned into sound (Text-to-speech), audio file is saved
-            Text_to_speech2(file, translated_text, speed)
+            Text_to_speech(file, translated_text, speed)
 
             # New speech replaces old speech in the original video
             Replace_sound(f'./files/{file.filename}', f'./files/{file.filename}.mp3', './files/translated_video.mp4')
