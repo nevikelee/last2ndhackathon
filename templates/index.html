@@ -1,5 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Translator</title>
+
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Your custom styles (if any) -->
+    <link rel="stylesheet" href="style.css">
     <style>
         .div {
             text-align: center;
@@ -61,120 +71,104 @@
             z-index: 0;
             text-align: center;
         }
-        
     </style>
-    <head>
 
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Video transcriber and dubber</title>
-        <!-- Materialize CSS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-        <!-- Your custom styles (if any) -->
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Get references to the input and video elements
-                const input = document.getElementById('videoInput');
-                const videoPreviewContainer = document.getElementById('videoPreviewContainer');
-                const videoPreview = document.getElementById('videoPreview');
-    
-                const audioPreviewContainer = document.getElementById('audioPreviewContainer');
-                const audioPreview = document.getElementById('audioPreview');
-    
-                function hideAll() {
-                    videoPreview.src = '';
-                    audioPreview.src = '';
-                    videoPreviewContainer.classList.add('hidden');
-                    audioPreviewContainer.classList.add('hidden');
-                }
-    
-                // Listen for changes on the file input
-                input.addEventListener('change', function () {
-                    const file = this.files[0];
-                    console.log(file)
-    
-                    if (file) {
-                        if (file.type.startsWith('video/')) {
-    
-                            loadPreview(file, videoPreviewContainer, videoPreview, audioPreviewContainer, audioPreview);
-                        }
-                        else if (file.type.startsWith('audio/')) {
-                            loadPreview(file, audioPreviewContainer, audioPreview, videoPreviewContainer, videoPreview);
-                        }
-                        else {
-                            hideAll();
-                        }
+</head>
+
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get references to the input and video elements
+            const input = document.getElementById('videoInput');
+            const videoPreviewContainer = document.getElementById('videoPreviewContainer');
+            const videoPreview = document.getElementById('videoPreview');
+
+            const audioPreviewContainer = document.getElementById('audioPreviewContainer');
+            const audioPreview = document.getElementById('audioPreview');
+
+            function hideAll() {
+                videoPreview.src = '';
+                audioPreview.src = '';
+                videoPreviewContainer.classList.add('hidden');
+                audioPreviewContainer.classList.add('hidden');
+            }
+
+            // Listen for changes on the file input
+            input.addEventListener('change', function () {
+                const file = this.files[0];
+                console.log(file)
+
+                if (file) {
+                    if (file.type.startsWith('video/')) {
+
+                        loadPreview(file, videoPreviewContainer, videoPreview, audioPreviewContainer, audioPreview);
+                    }
+                    else if (file.type.startsWith('audio/')) {
+                        loadPreview(file, audioPreviewContainer, audioPreview, videoPreviewContainer, videoPreview);
                     }
                     else {
                         hideAll();
                     }
-                });
-            });
-    
-    
-            function loadPreview(file, showContainer, show, hideContainer, hide) {
-    
-                show.src = URL.createObjectURL(file);
-                showContainer.classList.remove('hidden');
-                hideContainer.classList.add('hidden');
-                hide.src = '';
-                show.load();
-                show.play();
-            }
-    
-    
-            setTimeout(function () {
-                var flashMessages = document.getElementById('flash-messages');
-                if (flashMessages) {
-                    flashMessages.style.transition = "opacity 0.5s ease-out";
-                    flashMessages.style.opacity = "0";
-                    setTimeout(function () { flashMessages.style.display = "none"; }, 500); // Hides after fade out
                 }
-            }, 3000);
-    
-        </script>
+                else {
+                    hideAll();
+                }
+            });
+        });
 
 
+        function loadPreview(file, showContainer, show, hideContainer, hide) {
 
-<div class="container">
-    <div class="section">
+            show.src = URL.createObjectURL(file);
+            showContainer.classList.remove('hidden');
+            hideContainer.classList.add('hidden');
+            hide.src = '';
+            show.load();
+            show.play();
+        }
 
-        <!-- Flash Messages -->
-        <div class="row">
-            <p>
+
+        setTimeout(function () {
+            var flashMessages = document.getElementById('flash-messages');
+            if (flashMessages) {
+                flashMessages.style.transition = "opacity 0.5s ease-out";
+                flashMessages.style.opacity = "0";
+                setTimeout(function () { flashMessages.style.display = "none"; }, 500); // Hides after fade out
+            }
+        }, 3000);
+
+    </script>
+    <div class="container">
+        <div class="section">
+
+            <!-- Flash Messages -->
+            <div class="row">
                 {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <ul class="alert alert-primary">
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                        </ul>
-                        {% endif %}
-                    {% endwith %}
-                {% block body %}{% endblock %}
-            </p>
-            
-        </div>
+                {% if messages %}
+                <ul id="flash-messages" class="card-panel teal lighten-2" style="padding:1%;">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+            </div>
 
-        <!-- Form and Preview Section -->
-        <div class="row">
-            <div class="col s12 m6">
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="file-field input-field">
-                        <div class="btn">
-                            <span>Upload</span>
-                            <input type="file" id="videoInput" name="video" accept="audio/*,video/*">
+            <!-- Form and Preview Section -->
+            <div class="row">
+                <div class="col s12 m6">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload</span>
+                                <input type="file" id="videoInput" name="video" accept="audio/*,video/*">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Upload video or audio">
+                            </div>
                         </div>
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text" placeholder="Upload video or audio">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn waves-effect waves-light">Submit</button>
-                    <br>
+                    
                     <div class="col s12">
                         <label for="languages" style="display:block">Please select the language you want the video or audio to be translated to:</label>
                     </div>
@@ -239,53 +233,58 @@
                         <option>Welsh</option>
                     </select>
                     <br>
-                    <a href="/files/translated_video.mp4" download="translated_video.mp4">Your file is ready</a>
+                    <button type="submit" class="btn waves-effect waves-light">Submit</button>               
                     </div>
-                </form>
-
-            </div>
-
-            <!-- Preview Section -->
-            <div class="col s12 m6 previewContainer">
-                <div id="videoPreviewContainer" class="hidden">
-                    <video id="videoPreview" class="responsive-video" style="max-height:240px !important" controls>
-                        Your browser does not support the video tag.
-                    </video>
+                    </form>
                 </div>
-                <div id="audioPreviewContainer" class="hidden">
-                    <audio id="audioPreview" controls>
-                        Your browser does not support the audio element.
-                    </audio>
+
+                <!-- Preview Section -->
+                <div class="col s12 m6 previewContainer">
+                    <div id="videoPreviewContainer" class="hidden">
+                        <video id="videoPreview" class="responsive-video" style="max-height:240px !important" controls>
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div id="audioPreviewContainer" class="hidden">
+                        <audio id="audioPreview" controls>
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Transcripted Section -->
-        <div class="row">
-            <div class="col s12">
-                {{ transcripted }}
+            <!-- Transcripted Section -->
+            <div class="row">
+                <div class="col s12">
+                    {{ transcripted }}
+                </div>
             </div>
-        </div>
 
-         <!-- Translated Section -->
-         <div class="row">
-            <div class="col s12">
-                {{ translated }}
+             <!-- Translated Section -->
+             <div class="row">
+                <div class="col s12">
+                    {{ translated }}
+                </div>
             </div>
-        </div>
 
-        <!-- Files List -->
-        <div class="row">
-            <div class="col s12">
-                <h5>Files in Directory</h5>
-                <ul class="collection">
-                    {% for file in files %}
-                    <li id="{{ file }}" class="collection-item">{{ file }}</li>
-                    {% endfor %}
-                </ul>
+            <a class="btn waves-effect waves-light" href="/files/translated_video.mp4" download="translated_video.mp4">Download</a>
+
+            <!-- Files List -->
+            <div class="row">
+                <div class="col s12">
+                    <h5>Files in Directory</h5>
+                    <ul class="collection">
+                        {% for file in files %}
+                        <li class="collection-item">{{ file }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
-    </body>
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
 </html>

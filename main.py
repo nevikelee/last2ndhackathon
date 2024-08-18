@@ -183,6 +183,7 @@ def index():
             
             flash(f'File {file.filename} has been uploaded')
             files = os.listdir(app.config['UPLOAD_FOLDER'])
+            
             # Audio is transcribed and turned into text
             text_json = Transcribe(file.filename)
             text = text_json['text']
