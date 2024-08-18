@@ -1,14 +1,13 @@
 from flask import Flask, request, jsonify, render_template, flash, redirect, send_file
 import requests
 from flask_cors import CORS
-from EnvAPI import get_API
 import os
 import boto3
 import subprocess
 import soundfile as sf
 from moviepy.editor import *
 
-API_KEY = get_API()
+API_KEY = "INSERT-TURBOLINE-API-HERE"
 
 # Initialize flask and database
 app = Flask(__name__)
