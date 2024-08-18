@@ -17,10 +17,15 @@ CORS(app)
 
 # Check if uploaded file is video or audio
 ALLOWED_EXTENSIONS = set(['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm'])
+ALLOWED_AUDIO_EXTENSIONS = set(['flac', 'm4a', 'mp3', 'mpga', 'oga', 'ogg', 'wav', 'webm'])
 
 # Checks if uploaded file is the correct format
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Determines whether a file has a supported audio format
+def is_audio(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO_EXTENSIONS
 
 # Transcription method
 def Transcribe(filename):
@@ -67,18 +72,21 @@ def TranslateText(text, language):
 
 # Find the speed of the tts audio so the audio and video are the same length
 def FindSpeed(file, translated_text):
-    Text_to_speech1(file, translated_text)
-    OrgFile = sf.SoundFile(f"./files/{file.filename}.mp3")
+    video_filepath = f'./files/{file.filename}'
+    audio_filepath = f'./files/temp_{file.filename}.mp3'
+    Text_to_speech(audio_filepath, translated_text)
+    OrgFile = sf.SoundFile(audio_filepath)
     OrgSeconds = OrgFile.frames/OrgFile.samplerate
-    VideoFileClip(f"./files/{file.filename}").audio.write_audiofile(f"./files/{file.filename}.mp3")
-    ActualFile = sf.SoundFile(f"./files/{file.filename}.mp3")
+    VideoFileClip(video_filepath).audio.write_audiofile(audio_filepath)
+    ActualFile = sf.SoundFile(audio_filepath)
     ActualSeconds = ActualFile.frames/ActualFile.samplerate
     print(OrgSeconds)
     print(ActualSeconds)
     return OrgSeconds / ActualSeconds
 
-# Text to speech with normal speed
-def Text_to_speech1(first_file, text):
+
+# Text-to-speech method
+def Text_to_speech(target_path, text, speed=1.0):
     url = "https://api.turboline.ai/openai/audio/speech"
 
     header = {
@@ -89,50 +97,19 @@ def Text_to_speech1(first_file, text):
         "input": text,
         "voice": "onyx",
         "response_format" : "mp3",
-        "speed": 1
-    }
-    response = requests.post(url, headers=header, json=data, stream=True)
-    
-    if response.status_code == 200:
-        try:
-            os.remove(f"./files/{first_file.filename}.mp3")
-        except OSError:
-            pass
-        if 'audio' in response.headers.get('Content-Type', ''):
-            with open(f"./files/{first_file.filename}.mp3", 'wb') as f:
-                f.write(response.content)
-            print(f'Audio saved as {f"./files/{first_file.filename}.mp3"}')
-        else:
-            print("Unexpected content type received:", response.headers.get('Content-Type'))
-            print("Response content:", response.text)
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
-
-# Text-to-speech method
-def Text_to_speech2(first_file, translated_text, speed):
-    url = "https://api.turboline.ai/openai/audio/speech"
-
-    header = {
-        "X-TL-Key" : API_KEY,
-    }
-    data = {
-        "model": "tts-1",
-        "input": translated_text,
-        "voice": "onyx",
-        "response_format" : "mp3",
         "speed": speed
     }
     response = requests.post(url, headers=header, json=data, stream=True)
     
     if response.status_code == 200:
         try:
-            os.remove(f"./files/{first_file.filename}.mp3")
+            os.remove(f"{target_path}")
         except OSError:
             pass
         if 'audio' in response.headers.get('Content-Type', ''):
-            with open(f"./files/{first_file.filename}.mp3", 'wb') as f:
+            with open(f"{target_path}", 'wb') as f:
                 f.write(response.content)
-            print(f'Audio saved as {f"./files/{first_file.filename}.mp3"}')
+            print(f'Audio saved as {f"{target_path}"}')
         else:
             print("Unexpected content type received:", response.headers.get('Content-Type'))
             print("Response content:", response.text)
@@ -177,7 +154,24 @@ def index():
         language = request.form.get('languages')
         print(language)
 
-        if file and allowed_file(file.filename):
+        if(file and is_audio(file.filename)):
+            # Saves uploaded file to files folder
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            
+            flash(f'File {file.filename} has been uploaded')
+            files = os.listdir(app.config['UPLOAD_FOLDER'])
+            # Audio is transcribed and turned into text
+            text_json = Transcribe(file.filename)
+            text = text_json['text']
+
+            # Text is translated into wanted language
+            translated_text = TranslateText(text, language)
+
+             # Translated text is turned into sound (Text-to-speech), audio file is saved
+            Text_to_speech(f'./files/translated_{file.filename}', translated_text)
+
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text, download_name=f'translated_{file.filename}')
+        elif file and allowed_file(file.filename):
             # Saves uploaded file to files folder
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             
@@ -194,11 +188,11 @@ def index():
             speed = FindSpeed(file, translated_text)
 
             # Translated text is turned into sound (Text-to-speech), audio file is saved
-            Text_to_speech2(file, translated_text, speed)
+            Text_to_speech(f'./files/translated_{file.filename}.mp3', translated_text, speed)
 
             # New speech replaces old speech in the original video
-            Replace_sound(f'./files/{file.filename}', f'./files/{file.filename}.mp3', './files/translated_video.mp4')
-            return render_template('index.html', files=files, transcripted=text, translated=translated_text)
+            Replace_sound(f'./files/{file.filename}', f'./files/translated_{file.filename}.mp3', f'./files/translated_{file.filename}')
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text, download_name=f'translated_{file.filename}')
         else:
             flash('Incorrect file type')
             redirect('/')
