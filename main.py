@@ -168,9 +168,9 @@ def index():
             translated_text = TranslateText(text, language)
 
              # Translated text is turned into sound (Text-to-speech), audio file is saved
-            Text_to_speech2(file, translated_text, 1.0)
+            Text_to_speech(f'./files/translated_{file.filename}', translated_text)
 
-            return render_template('index.html', files=files, transcripted=text, translated=translated_text)
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text, download_name=f'translated_{file.filename}')
         elif file and allowed_file(file.filename):
             # Saves uploaded file to files folder
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
@@ -191,8 +191,8 @@ def index():
             Text_to_speech(f'./files/translated_{file.filename}.mp3', translated_text, speed)
 
             # New speech replaces old speech in the original video
-            Replace_sound(f'./files/{file.filename}', f'./files/translated_{file.filename}.mp3', './files/translated_{file.filename}')
-            return render_template('index.html', files=files, transcripted=text, translated=translated_text)
+            Replace_sound(f'./files/{file.filename}', f'./files/translated_{file.filename}.mp3', f'./files/translated_{file.filename}')
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text, download_name=f'translated_{file.filename}')
         else:
             flash('Incorrect file type')
             redirect('/')
