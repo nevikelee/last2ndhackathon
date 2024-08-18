@@ -76,7 +76,10 @@
     <body>
 
         <script>
+
             document.addEventListener('DOMContentLoaded', function () {
+
+                
                 // Get references to the input and video elements
                 const input = document.getElementById('videoInput');
                 const videoPreviewContainer = document.getElementById('videoPreviewContainer');
@@ -84,6 +87,14 @@
     
                 const audioPreviewContainer = document.getElementById('audioPreviewContainer');
                 const audioPreview = document.getElementById('audioPreview');
+
+
+                fileUrl = "{{ fileUrl }}";
+                if(fileUrl){
+                    console.log(fileUrl);
+                    loadDubbed('./files/translated_video.mp4', videoPreviewContainer, videoPreview, audioPreviewContainer, audioPreview);
+                }
+                
     
                 function hideAll() {
                     videoPreview.src = '';
@@ -105,9 +116,6 @@
                         else if (file.type.startsWith('audio/')) {
                             loadPreview(file, audioPreviewContainer, audioPreview, videoPreviewContainer, videoPreview);
                         }
-                        else {
-                            hideAll();
-                        }
                     }
                     else {
                         hideAll();
@@ -115,10 +123,20 @@
                 });
             });
     
+            function loadDubbed(file, showContainer, show, hideContainer, hide)
+            {
+                show.src = file;
+                showContainer.classList.remove('hidden');
+                hideContainer.classList.add('hidden');
+                hide.src = '';
+                show.load();
+                show.play();
+            }
     
             function loadPreview(file, showContainer, show, hideContainer, hide) {
-    
+
                 show.src = URL.createObjectURL(file);
+                // show.src = file;
                 showContainer.classList.remove('hidden');
                 hideContainer.classList.add('hidden');
                 hide.src = '';
@@ -135,6 +153,7 @@
                     setTimeout(function () { flashMessages.style.display = "none"; }, 500); // Hides after fade out
                 }
             }, 3000);
+
     
         </script>
 
