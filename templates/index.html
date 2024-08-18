@@ -157,73 +157,6 @@
                     {% endwith %}
                 {% block body %}{% endblock %}
             </p>
-
-            <form action="" method='POST' enctype="multipart/form-data">
-                <label for="video">Video</label>
-                <input type="file" name="video"/>
-                <label for="language">Please select the language you want the video or audio to be translated to:</label>
-                <select name="languages" id="languages">
-                    <option>Afrikaans</option>
-                    <option>Arabic</option>
-                    <option>Armenian</option>
-                    <option>Azerbaijani</option>
-                    <option>Belarusian</option>
-                    <option>Bosnian</option>
-                    <option>Bulgarian</option>
-                    <option>Catalan</option>
-                    <option>Chinese</option>
-                    <option>Croatian</option>
-                    <option>Czech</option>
-                    <option>Danish</option>
-                    <option>Dutch</option>
-                    <option>English</option>
-                    <option>Estonian</option>
-                    <option>Finnish</option>
-                    <option>French</option>
-                    <option>Galician</option>
-                    <option>German</option>
-                    <option>Greek</option>
-                    <option>Hebrew</option>
-                    <option>Hindi</option>
-                    <option>Hungarian</option>
-                    <option>Icelandic</option>
-                    <option>Indonesian</option>
-                    <option>Italian</option>
-                    <option>Japanese</option>
-                    <option>Kannada</option>
-                    <option>Kazakh</option>
-                    <option>Korean</option>
-                    <option>Latvian</option>
-                    <option>Lithuanian</option>
-                    <option>Macedonian</option>
-                    <option>Malay</option>
-                    <option>Marathi</option>
-                    <option>Maori</option>
-                    <option>Nepali</option>
-                    <option>Norwegian</option>
-                    <option>Persian</option>
-                    <option>Polish</option>
-                    <option>Portuguese</option>
-                    <option>Romanian</option>
-                    <option>Russian</option>
-                    <option>Serbian</option>
-                    <option>Slovak</option>
-                    <option>Slovenian</option>
-                    <option>Spanish</option>
-                    <option>Swahili</option>
-                    <option>Swedish</option>
-                    <option>Tagalog</option>
-                    <option>Tamil</option>
-                    <option>Thai</option>
-                    <option>Turkish</option>
-                    <option>Ukrainian</option>
-                    <option>Urdu</option>
-                    <option>Vietnamese</option>
-                    <option>Welsh</option>
-                </select>
-                <button>Submit</button>
-                <a href="/files/translated_video.mp4" download="translated_video.mp4">Your file is ready</a>
-            </form>
             
         </div>
 
@@ -241,7 +174,75 @@
                         </div>
                     </div>
                     <button type="submit" class="btn waves-effect waves-light">Submit</button>
+                    <br>
+                    <div class="col s12">
+                        <label for="languages" style="display:block">Please select the language you want the video or audio to be translated to:</label>
+                    </div>
+                    <div class="input-field col s12">
+                    <select style="display:block" name="languages" id="languages">
+                        <option>Afrikaans</option>
+                        <option>Arabic</option>
+                        <option>Armenian</option>
+                        <option>Azerbaijani</option>
+                        <option>Belarusian</option>
+                        <option>Bosnian</option>
+                        <option>Bulgarian</option>
+                        <option>Catalan</option>
+                        <option>Chinese</option>
+                        <option>Croatian</option>
+                        <option>Czech</option>
+                        <option>Danish</option>
+                        <option>Dutch</option>
+                        <option>English</option>
+                        <option>Estonian</option>
+                        <option>Finnish</option>
+                        <option>French</option>
+                        <option>Galician</option>
+                        <option>German</option>
+                        <option>Greek</option>
+                        <option>Hebrew</option>
+                        <option>Hindi</option>
+                        <option>Hungarian</option>
+                        <option>Icelandic</option>
+                        <option>Indonesian</option>
+                        <option>Italian</option>
+                        <option>Japanese</option>
+                        <option>Kannada</option>
+                        <option>Kazakh</option>
+                        <option>Korean</option>
+                        <option>Latvian</option>
+                        <option>Lithuanian</option>
+                        <option>Macedonian</option>
+                        <option>Malay</option>
+                        <option>Marathi</option>
+                        <option>Maori</option>
+                        <option>Nepali</option>
+                        <option>Norwegian</option>
+                        <option>Persian</option>
+                        <option>Polish</option>
+                        <option>Portuguese</option>
+                        <option>Romanian</option>
+                        <option>Russian</option>
+                        <option>Serbian</option>
+                        <option>Slovak</option>
+                        <option>Slovenian</option>
+                        <option>Spanish</option>
+                        <option>Swahili</option>
+                        <option>Swedish</option>
+                        <option>Tagalog</option>
+                        <option>Tamil</option>
+                        <option>Thai</option>
+                        <option>Turkish</option>
+                        <option>Ukrainian</option>
+                        <option>Urdu</option>
+                        <option>Vietnamese</option>
+                        <option>Welsh</option>
+                    </select>
+                    <br>
+                    <a href="/files/translated_video.mp4" download="translated_video.mp4">Your file is ready</a>
+                    </div>
                 </form>
+
             </div>
 
             <!-- Preview Section -->
