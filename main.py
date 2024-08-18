@@ -67,11 +67,13 @@ def TranslateText(text, language):
 
 # Find the speed of the tts audio so the audio and video are the same length
 def FindSpeed(file, translated_text):
-    Text_to_speech(file, translated_text)
-    OrgFile = sf.SoundFile(f"./files/{file.filename}.mp3")
+    video_filepath = f'./files/{file.filename}'
+    audio_filepath = f'./files/temp_{file.filename}.mp3'
+    Text_to_speech(audio_filepath, translated_text)
+    OrgFile = sf.SoundFile(audio_filepath)
     OrgSeconds = OrgFile.frames/OrgFile.samplerate
-    VideoFileClip(f"./files/{file.filename}").audio.write_audiofile(f"./files/{file.filename}.mp3")
-    ActualFile = sf.SoundFile(f"./files/{file.filename}.mp3")
+    VideoFileClip(video_filepath).audio.write_audiofile(audio_filepath)
+    ActualFile = sf.SoundFile(audio_filepath)
     ActualSeconds = ActualFile.frames/ActualFile.samplerate
     print(OrgSeconds)
     print(ActualSeconds)
@@ -79,7 +81,7 @@ def FindSpeed(file, translated_text):
 
 
 # Text-to-speech method
-def Text_to_speech(file, text, speed=1.0):
+def Text_to_speech(target_path, text, speed=1.0):
     url = "https://api.turboline.ai/openai/audio/speech"
 
     header = {
@@ -96,13 +98,13 @@ def Text_to_speech(file, text, speed=1.0):
     
     if response.status_code == 200:
         try:
-            os.remove(f"./files/{file.filename}.mp3")
+            os.remove(f"{target_path}")
         except OSError:
             pass
         if 'audio' in response.headers.get('Content-Type', ''):
-            with open(f"./files/{file.filename}.mp3", 'wb') as f:
+            with open(f"{target_path}", 'wb') as f:
                 f.write(response.content)
-            print(f'Audio saved as {f"./files/{file.filename}.mp3"}')
+            print(f'Audio saved as {f"{target_path}"}')
         else:
             print("Unexpected content type received:", response.headers.get('Content-Type'))
             print("Response content:", response.text)
@@ -164,10 +166,10 @@ def index():
             speed = FindSpeed(file, translated_text)
 
             # Translated text is turned into sound (Text-to-speech), audio file is saved
-            Text_to_speech(file, translated_text, speed)
+            Text_to_speech(f'./files/translated_{file.filename}.mp3', translated_text, speed)
 
             # New speech replaces old speech in the original video
-            Replace_sound(f'./files/{file.filename}', f'./files/{file.filename}.mp3', './files/translated_video.mp4')
+            Replace_sound(f'./files/{file.filename}', f'./files/translated_{file.filename}.mp3', './files/translated_video.mp4')
             return render_template('index.html', files=files, transcripted=text, translated=translated_text)
         else:
             flash('Incorrect file type')
