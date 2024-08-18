@@ -1,13 +1,14 @@
 from flask import Flask, request, jsonify, render_template, flash, redirect, send_file
 import requests
 from flask_cors import CORS
+from EnvAPI import get_API
 import os
 import boto3
 import subprocess
 import soundfile as sf
 from moviepy.editor import *
 
-API_KEY = "9fb2c952d7ef4badb5c3b9c60bac8f78"
+API_KEY = get_API()
 
 # Initialize flask and database
 app = Flask(__name__)
