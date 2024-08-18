@@ -17,10 +17,15 @@ CORS(app)
 
 # Check if uploaded file is video or audio
 ALLOWED_EXTENSIONS = set(['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm'])
+ALLOWED_AUDIO_EXTENSIONS = set(['flac', 'm4a', 'mp3', 'mpga', 'oga', 'ogg', 'wav', 'webm'])
 
 # Checks if uploaded file is the correct format
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Determines whether a file has a supported audio format
+def is_audio(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO_EXTENSIONS
 
 # Transcription method
 def Transcribe(filename):
@@ -177,7 +182,24 @@ def index():
         language = request.form.get('languages')
         print(language)
 
-        if file and allowed_file(file.filename):
+        if(file and is_audio(file.filename)):
+            # Saves uploaded file to files folder
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            
+            flash(f'File {file.filename} has been uploaded')
+            files = os.listdir(app.config['UPLOAD_FOLDER'])
+            # Audio is transcribed and turned into text
+            text_json = Transcribe(file.filename)
+            text = text_json['text']
+
+            # Text is translated into wanted language
+            translated_text = TranslateText(text, language)
+
+             # Translated text is turned into sound (Text-to-speech), audio file is saved
+            Text_to_speech2(file, translated_text, 1.0)
+
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text)
+        elif file and allowed_file(file.filename):
             # Saves uploaded file to files folder
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             
