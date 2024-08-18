@@ -168,7 +168,11 @@ def Replace_sound(original_video_path, new_audio_path, destination_video_path):
 # Main page
 @app.route('/', methods=['GET', 'POST'])
 def index():
+
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    
     if request.method == 'POST':
+
         file = request.files['video']
         language = request.form.get('languages')
         print(language)
@@ -178,7 +182,7 @@ def index():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             
             flash(f'File {file.filename} has been uploaded')
-
+            files = os.listdir(app.config['UPLOAD_FOLDER'])
             # Audio is transcribed and turned into text
             text_json = Transcribe(file.filename)
             text = text_json['text']
@@ -194,15 +198,16 @@ def index():
 
             # New speech replaces old speech in the original video
             Replace_sound(f'./files/{file.filename}', f'./files/{file.filename}.mp3', './files/translated_video.mp4')
+            return render_template('index.html', files=files, transcripted=text, translated=translated_text)
         else:
             flash('Incorrect file type')
             redirect('/')
-    return render_template('index.html')
+    return render_template('index.html', files=files)
 
 # Download translated video
 @app.route('/files/<filename>')
 def get_file(filename):
-    return send_file(os.path.join('files/', filename), as_attachment=False)
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename), as_attachment=False)
 
 if __name__ == "__main__":
     app.run(debug=True)
