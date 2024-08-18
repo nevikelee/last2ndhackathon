@@ -169,7 +169,7 @@ def index():
             Text_to_speech(f'./files/translated_{file.filename}.mp3', translated_text, speed)
 
             # New speech replaces old speech in the original video
-            Replace_sound(f'./files/{file.filename}', f'./files/translated_{file.filename}.mp3', './files/translated_video.mp4')
+            Replace_sound(f'./files/{file.filename}', f'./files/translated_{file.filename}.mp3', './files/translated_{file.filename}')
             return render_template('index.html', files=files, transcripted=text, translated=translated_text)
         else:
             flash('Incorrect file type')
