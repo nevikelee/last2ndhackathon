@@ -9,7 +9,10 @@ def FindSpeed(filename,TTSfilename):
     Speech(transcribeAudio(),get_API(),TTSfilename)
     OrgFile = sf.SoundFile(TTSfilename)
     OrgSeconds = OrgFile.frames/OrgFile.samplerate
-    VideoFileClip(filename).audio.write_audiofile("test_video.mp3")
-    ActualFile = sf.SoundFile("test_video.mp3")
+    if(filename.endswith(".mp4")):
+        VideoFileClip(filename).audio.write_audiofile("test_video.mp3")
+        ActualFile = sf.SoundFile("test_video.mp3")
+    else:
+        ActualFile = sf.SoundFile(filename)
     ActualSeconds = ActualFile.frames/ActualFile.samplerate
     return OrgSeconds / ActualSeconds
