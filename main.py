@@ -207,7 +207,7 @@ def index():
 # Download translated video
 @app.route('/files/<filename>')
 def get_file(filename):
-    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename), as_attachment=False)
+    return send_file(os.path.join('files\\', filename), as_attachment=False)
 
 if __name__ == "__main__":
     app.run(debug=True)
