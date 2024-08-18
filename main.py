@@ -101,7 +101,7 @@ def Text_to_speech1(first_file, text):
         if 'audio' in response.headers.get('Content-Type', ''):
             with open(f"./files/{first_file.filename}.mp3", 'wb') as f:
                 f.write(response.content)
-            print(f"Audio saved as {f"./files/{first_file.filename}.mp3"}")
+            print(f'Audio saved as {f"./files/{first_file.filename}.mp3"}')
         else:
             print("Unexpected content type received:", response.headers.get('Content-Type'))
             print("Response content:", response.text)
@@ -132,7 +132,7 @@ def Text_to_speech2(first_file, translated_text, speed):
         if 'audio' in response.headers.get('Content-Type', ''):
             with open(f"./files/{first_file.filename}.mp3", 'wb') as f:
                 f.write(response.content)
-            print(f"Audio saved as {f"./files/{first_file.filename}.mp3"}")
+            print(f'Audio saved as {f"./files/{first_file.filename}.mp3"}')
         else:
             print("Unexpected content type received:", response.headers.get('Content-Type'))
             print("Response content:", response.text)
